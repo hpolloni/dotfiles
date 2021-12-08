@@ -1,0 +1,76 @@
+#!/usr/bin/python3
+
+import subprocess, sys
+import logging
+import argparse
+
+logging.basicConfig(level=logging.WARN)
+
+def list_remotes(pattern):
+    logging.debug("Running 'git ls-remote'")
+    output = subprocess.check_output('git ls-remote', shell=True)
+    lines = output.decode().split('\n')
+    return [line for line in lines if pattern in line]
+
+def input_number(prompt, min, max):
+    try:
+        choice = input(prompt).strip()
+        value = int(choice)
+        if value < min or value > max:
+            logging.debug("Value %d is out of range: (%d,%d)" % (value, min, max))
+            return None
+        return value
+    except ValueError:
+        logging.debug("Value error. Probably a malformed input.")
+        return None
+
+def get_ref(remote):
+    return remote.split('\t')[1]
+
+def prompt_until_valid(remotes):
+    while True:
+        print("Select remote to fetch.")
+        i = 1
+        for remote in remotes:
+            print("[%d] %s" % (i, remote))
+            i += 1
+        choice = input_number("Select a number or press Ctrl+C to quit: ", 0, len(remote))
+        if choice is None:
+            continue
+        remote_ref = get_ref(remotes[choice])
+        return remote_ref
+    
+def prompt_for_remote(remotes):
+    if len(remotes) > 10:
+        print("Found more than 10 matches...showing you the first ten")
+    remotes = remotes[:9]
+    try:
+        return prompt_until_valid(remotes)
+    except KeyboardInterrupt:
+        return None
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", '--pattern', type=str, help='Pattern to search on the list of remotes.')
+    parser.add_argument("-b", '--branch', type=str, help='Local branch to checkout', required=True)
+    args = parser.parse_args()
+
+    print("Fetching remotes")
+    pattern = ''
+    if args.pattern is not None:
+        pattern = args.pattern
+    remotes = list_remotes(pattern)
+    if len(remotes) == 0:
+        print("No remotes found with pattern: '%s'" % pattern)
+        sys.exit(-1)
+    ref = get_ref(remotes[0])
+    if len(ref) > 1:
+        ref = prompt_for_remote(remotes)
+    if ref is not None:
+        subprocess.check_output('git fetch origin %s' % ref, shell=True)
+        print("Stashing local changes, if any.")
+        subprocess.check_output('git stash', shell=True)
+        subprocess.check_output('git checkout -b %s FETCH_HEAD' % args.branch, shell=True)
+
+if __name__ == '__main__':
+    main()
