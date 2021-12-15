@@ -1,0 +1,15 @@
+[user]
+	name = Herman Polloni
+	email = herman@dremio.com
+[pull]
+	rebase = true
+[diff]
+	tool = vimdiff
+[alias]
+	dag = log --all --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset'
+[difftool]
+	prompt = false
+[merge]
+	tool = vimdiff
+[core]
+	excludesfile = /Users/hermanpolloni/.gitexcludes

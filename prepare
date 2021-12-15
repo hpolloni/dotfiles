@@ -1,7 +1,14 @@
 #!bash
 
 # Install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+#sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+rm ${HOME}/.zshrc
+rm ${HOME}/bin
+rm ${HOME}/.gitconfig
+rm ${HOME}/.gitexcludes
 
 ln -s ${PWD}/_zshrc ${HOME}/.zshrc
 ln -s ${PWD}/bin ${HOME}/bin
+ln -s ${PWD}/_gitconfig ${HOME}/.gitconfig
+ln -s ${PWD}/_gitexcludes ${HOME}/.gitexcludes
