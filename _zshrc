@@ -101,9 +101,11 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias nsl='sudo lsof -i -P | grep LISTEN'
-alias bb='mvn clean install -DskipTests -T8'
+alias bb='mvn clean install -DskipTests -Dmaven.test.skip -Dmaven.javadoc.skip=true -Dforbiddenapis.skip=true -T 12'
 alias nproc='sysctl -n hw.logicalcpu'
 alias dif='vimdiff'
+alias dremio='~/workspace/dremio/enterprise/distribution/server/target/dremio-enterprise-*/dremio-enterprise-*/bin/dremio'
+alias cr='git push origin HEAD:refs/for/master'
 
 function java_version {
     java -version 2>&1 | head -1 | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+'
@@ -114,12 +116,13 @@ function python_version {
 }
 
 function jsondiff {
-	vimdiff <(jq --sort-keys . $1) <(jq --sort-keys . $2)
+    vimdiff <(jq --sort-keys . $1) <(jq --sort-keys . $2)
 }
 
 export RPROMPT='java-$(java_version) python-$(python_version)'
-
-export PATH=$HOME/bin:$PATH
+export GOPATH=$HOME/go
+export GOROOT=/usr/local/opt/go/libexec
+export PATH=$HOME/bin:$HOME/go/bin:$GOROOT/bin:$PATH
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
