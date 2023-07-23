@@ -1,6 +1,6 @@
 [user]
 	name = Herman Polloni
-	email = herman.polloni@dremio.com
+	email = hpolloni@gmail.com
 [pull]
 	rebase = true
 [diff]
@@ -12,5 +12,5 @@
 [merge]
 	tool = vimdiff
 [core]
-	excludesfile = /Users/hermanpolloni/.gitexcludes
-	email = herman.polloni@dremio.com
+	excludesfile = ~/.gitexcludes
+	email = hpolloni@gmail.com
