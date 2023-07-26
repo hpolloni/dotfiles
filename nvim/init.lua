@@ -17,6 +17,11 @@ require("lazy").setup({
   {'folke/tokyonight.nvim'},
   {'nvim-treesitter/nvim-treesitter'},
   {
+      'nvim-telescope/telescope.nvim',
+      tag = '0.1.2',
+      dependencies = {'nvim-lua/plenary.nvim'}
+  },
+  {
     'VonHeikemen/lsp-zero.nvim',
     branch = 'v2.x',
     dependencies = {
@@ -37,6 +42,9 @@ require("lazy").setup({
     }
   }
 })
+
+vim.g.mapleader = ","
+
 -- Line numbers
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -51,6 +59,10 @@ vim.opt.expandtab = true
 vim.opt.termguicolors = true
 vim.cmd.colorscheme('tokyonight')
 
+-- Search
+vim.opt.hlsearch = false
+vim.opt.incsearch = true
+
 -- LSP
 local lsp = require('lsp-zero').preset({})
 
@@ -59,6 +71,16 @@ lsp.on_attach(function(client, bufnr)
 end)
 
 lsp.setup()
+
+local cmp = require('cmp')
+
+cmp.setup({
+    mapping = {
+        ['<CR>'] = cmp.mapping.confirm({select = false}),
+    }
+})
+
+vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {})
 
 -- Tree Sitter
 require('nvim-treesitter.configs').setup({
@@ -73,3 +95,13 @@ require('nvim-treesitter.configs').setup({
         additional_vim_regex_highlighting = false
     }
 })
+
+-- Telescope/Fuzzy searching
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+
+vim.lsp.set_log_level("debug")
+
